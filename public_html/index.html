@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="https://code.createjs.com/createjs-2015.11.26.min.js"></script>
+
+<script>
+// 読み込みが終わってから初期化
+window.addEventListener("load", init);
+
+function init() {
+
+    // タッチ操作をサポートしているブラウザ
+    if (createjs.Touch.isSupported() == true) {
+        // タッチ操作を有効に
+        createjs.Touch.enable(stage)
+    }
+
+    //canvasを画面いっぱいに
+    var canvas = document.getElementById("myCanvas");
+    var stage = new createjs.Stage(canvas);
+    stage.canvas.width = window.innerWidth;
+    stage.canvas.height = window.innerHeight;
+
+    // 初期化
+    var stage = new createjs.Stage("myCanvas");
+    stage.enableMouseOver();
+
+    // ループ
+    for (var i = 0; i < 50; i++) {
+
+        // シェイプを作成
+        var shape = new createjs.Shape();
+        stage.addChild(shape);
+
+        // マウスイベントを登録
+        shape.addEventListener("click", handleCircleClick);
+        shape.addEventListener("mouseover", handleMouseOver);
+        shape.addEventListener("mouseout", handleMouseOut);
+
+        // HSLカラーを算出
+        var hue = 360 * Math.random();
+        var color = "hsl(" + hue + ", 100%, 50%)";
+
+        // ランダムで配置する準備
+        var x = stage.canvas.width * Math.random();
+        var y = stage.canvas.height * Math.random();
+
+        // 指定した範囲でのサイズ表示
+        var circleSize = (Math.random() * ((40 + 1) - 20)) + 20;
+
+        //シェイプのカラーと形を指定してランダム表示
+        shape.graphics.clear()
+            .beginFill("#EFEFEF")
+            .drawCircle(x, y, circleSize);
+
+        // アニメーション移動
+        createjs.Tween.get(shape,{loop: true}) // ターゲットを指定
+            .to({x: 300, y: 500, alpha: 0.5}, 40000)
+            .to({x: 300 ,  y: 0}, 40000)
+            .to({x: 0 ,  y: 500}, 40000)
+            .to({x: 0 ,  y: 0}, 40000);
+
+    }
+
+    // マウスオーバー時
+    function handleMouseOver(event) {
+        //var pt = shape.globalToLocal(stage.mouseX, stage.mouseY);
+        shape.graphics.clear()
+            .beginFill(color)
+            .drawCircle(x, y, circleSize);
+    }
+
+    // マウスアウト時
+    function handleMouseOut(event) {
+        //var pt = shape.globalToLocal(stage.mouseX, stage.mouseY);
+        shape.graphics.clear()
+            .beginFill(color)
+            .drawCircle(x, y, circleSize);
+    }
+
+    // クリック時
+    function handleCircleClick(event) {
+
+    }
+
+    // tick イベントを監視
+    createjs.Ticker.addEventListener("tick", handleTick);
+    function handleTick() {
+        // Stageを更新
+        stage.update();
+    }
+
+}
+</script>
+</head>
+
+<body>
+
+    <canvas id="myCanvas" width="960" height="500"></canvas>
+
+</body>
+</html>

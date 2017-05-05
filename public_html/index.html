@@ -3,18 +3,18 @@
 <head>
 <meta charset="utf-8">
 <script src="https://code.createjs.com/createjs-2015.11.26.min.js"></script>
-
+<style>
+canvas#myCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -10;
+</style>
 <script>
 // 読み込みが終わってから初期化
 window.addEventListener("load", init);
 
 function init() {
-
-    // タッチ操作をサポートしているブラウザ
-    if (createjs.Touch.isSupported() == true) {
-        // タッチ操作を有効に
-        createjs.Touch.enable(stage)
-    }
 
     //canvasを画面いっぱいに
     var canvas = document.getElementById("myCanvas");
@@ -24,6 +24,8 @@ function init() {
 
     // 初期化
     var stage = new createjs.Stage("myCanvas");
+
+    // マウスオーバーを有効にする
     stage.enableMouseOver();
 
     // ループ
@@ -31,16 +33,9 @@ function init() {
 
         // シェイプを作成
         var shape = new createjs.Shape();
+        var shape2 = new createjs.Shape();
         stage.addChild(shape);
-
-        // マウスイベントを登録
-        shape.addEventListener("click", handleCircleClick);
-        shape.addEventListener("mouseover", handleMouseOver);
-        shape.addEventListener("mouseout", handleMouseOut);
-
-        // HSLカラーを算出
-        var hue = 360 * Math.random();
-        var color = "hsl(" + hue + ", 100%, 50%)";
+        stage.addChild(shape2);
 
         // ランダムで配置する準備
         var x = stage.canvas.width * Math.random();
@@ -54,33 +49,24 @@ function init() {
             .beginFill("#EFEFEF")
             .drawCircle(x, y, circleSize);
 
+        shape2.graphics.clear()
+            .beginFill("#CCC")
+            .drawCircle(x, y, circleSize);
+
         // アニメーション移動
         createjs.Tween.get(shape,{loop: true}) // ターゲットを指定
-            .to({x: 300, y: 500, alpha: 0.5}, 40000)
-            .to({x: 300 ,  y: 0}, 40000)
-            .to({x: 0 ,  y: 500}, 40000)
-            .to({x: 0 ,  y: 0}, 40000);
+            .to({scaleX: 1, scaleY: 1,x: 300, y: 500, alpha: 0.5}, 40000)
+            .to({x: 300, y: 0}, 40000)
+            .to({x: 0,  y: 500}, 40000)
+            .to({x: 0,  y: 0}, 40000);
 
-    }
-
-    // マウスオーバー時
-    function handleMouseOver(event) {
-        //var pt = shape.globalToLocal(stage.mouseX, stage.mouseY);
-        shape.graphics.clear()
-            .beginFill(color)
-            .drawCircle(x, y, circleSize);
-    }
-
-    // マウスアウト時
-    function handleMouseOut(event) {
-        //var pt = shape.globalToLocal(stage.mouseX, stage.mouseY);
-        shape.graphics.clear()
-            .beginFill(color)
-            .drawCircle(x, y, circleSize);
-    }
-
-    // クリック時
-    function handleCircleClick(event) {
+        // アニメーション移動
+        createjs.Tween.get(shape2,{loop: true}) // ターゲットを指定
+            .wait(5000)
+            .to({scaleY: 1,x: 300, y: 500, alpha: 0.5}, 45000)
+            .to({x: 300, y: 0}, 45000)
+            .to({x: 0,  y: 500}, 45000)
+            .to({x: 0,  y: 0}, 45000);
 
     }
 
